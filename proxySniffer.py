@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 __author__ = 'JosePh.XRays'
+__DateTime__='2018-03-11 12:18:26'
+
 
 import os
 import sys
@@ -156,7 +158,7 @@ def mainFunction():
         proxy.Go(maxPage=maximum)
         lst = proxy.toList()
 
-        # stdout  proxy list with table
+        # output proxy ip list
         print(drawTable(typeproxy, lst))
 
         # export the file
@@ -171,7 +173,7 @@ def mainFunction():
             else:
                 print('Save file failed!')
 
-        # export mysqlite3
+        # export to sqlite3
         if opts.sqlite3:
             proxy_sqlite3 = ProxySqlite3(opts.sqlite3, lst)
             proxy_sqlite3.export()
