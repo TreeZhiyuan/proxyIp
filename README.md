@@ -41,3 +41,12 @@ Options:
 
     --sqlite3=PATH      Export proxy to sqlite3 database 
 ```
+
+
+# Example
+
+```sh
+> proxySniffer.py -c -f proxy.lst -r 10
+> proxySniffer.py -s -o output.txt
+> proxySniffer.py -s --sqlite3=test.db
+```
