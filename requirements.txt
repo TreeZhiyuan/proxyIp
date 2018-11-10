@@ -1,0 +1,6 @@
+
+Requirements:
+1. termcolor
+2. requests
+3. demjson
+4. texttable
