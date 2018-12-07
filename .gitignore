@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+.idea/
+proxySniffer/SignPic/__pycache__/
+proxySniffer/__pycache__/
+.gitignore
