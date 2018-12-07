@@ -3,36 +3,35 @@
 __author__ = 'JosePh.XRays'
 
 import os
-import sys
 import re
 import requests
-import threading
-import subprocess
+
 import datetime
 from termcolor import colored
 
 from proxyThread import ProxyThreading
 
 # 国内高匿代理
-INTERNAL_HIGHANONYMITY_PROXY=0
+INTERNAL_HIGHANONYMITY_PROXY = 0
 # 国内普通代理
-INTERNAL_COMMON_PROXY=1
+INTERNAL_COMMON_PROXY = 1
 # 国内HTTP代理
-INTERNAL_HTTP_PROXY=4
+INTERNAL_HTTP_PROXY = 4
 # 国内HTTPS代理
-INTERNAL_HTTPS_PROXY=5
+INTERNAL_HTTPS_PROXY = 5
 
 # 国外高匿代理
-EXTERNAL_HIGHANONYMITY_PROXY=2
+EXTERNAL_HIGHANONYMITY_PROXY = 2
 # 国外普通代理
-EXTERNAL_COMMON_PROXY=3
+EXTERNAL_COMMON_PROXY = 3
 
 
 class Proxies(object):
     '''
     This is a base class,but I not recommend you to use it
     '''
-    def __init__(self,url,
+
+    def __init__(self, url,
                  headers=None,
                  pattern=None,
                  pattern_header=None,
@@ -41,22 +40,22 @@ class Proxies(object):
                  typeproxy=None,
                  chardet='utf-8'):
 
-        if headers==None:
-            self.headers=headers = {
-             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36'
+        if headers is None:
+            self.headers = headers = {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36'
             }
         else:
             self.headers = headers
 
-        self.url=url
-        self.proxies=proxies
-        self.timeout=timeout
-        self.result=[]
-        self.typeproxy=typeproxy
-        self.chardet=chardet
+        self.url = url
+        self.proxies = proxies
+        self.timeout = timeout
+        self.result = []
+        self.typeproxy = typeproxy
+        self.chardet = chardet
 
-        self.pattern=pattern
-        self.pattern_header=pattern_header
+        self.pattern = pattern
+        self.pattern_header = pattern_header
         pass
 
     def getDateTimeNow(self):
@@ -70,7 +69,7 @@ class Proxies(object):
         '''
         pass
 
-    def _getSources(self,numberpage=1):
+    def _getSources(self, numberpage=1):
         '''
         Get url source text,must be overrided
         :param numberpage: the INDEX of page
@@ -79,20 +78,20 @@ class Proxies(object):
         if self.headers is None:
             return
         try:
-            self.url= self.pack_urlquery(numberpage)
-            print(colored('get=> '+self.url,'green',None,['underline']))
+            self.url = self.pack_urlquery(numberpage)
+            print(colored('get=> ' + self.url, 'green', None, ['underline']))
             with requests.Session() as sess:
                 if self.proxies is not None:
                     sess.proxies = self.proxies
-                req= requests.Request(method='GET',url=self.url,headers=self.headers)
-                preq= sess.prepare_request(req)
+                req = requests.Request(method='GET', url=self.url, headers=self.headers)
+                preq = sess.prepare_request(req)
                 send_kwargs = {
                     'timeout': self.timeout
                 }
-                resp= sess.send(preq,**send_kwargs)
+                resp = sess.send(preq, **send_kwargs)
 
                 # try to convert gbk to utf-8
-                if self.chardet.lower()=='gbk' or self.chardet.lower()=='gb2312':
+                if self.chardet.lower() == 'gbk' or self.chardet.lower() == 'gb2312':
                     text = resp.content.decode('gbk').encode('utf-8').decode('utf-8')
                 else:
                     text = resp.text
@@ -102,44 +101,44 @@ class Proxies(object):
             return None
         pass
 
-    def _getIPs(self,maxPage=2):
+    def _getIPs(self, maxPage=2):
         '''
         May be overrided
         :param maxPage: maximum of the pages
         :return:
         '''
-        if maxPage<=0:
+        if maxPage <= 0:
             return None
 
-        ls_source=[]
+        ls_source = []
 
         for i in range(maxPage):
-            tmpTh = ProxyThreading(self._threadfunc, i+1)
+            tmpTh = ProxyThreading(self._threadfunc, i + 1)
             tmpTh.start()
             tmpTh.join()
             source = tmpTh.get_result()
             ls_source.append(source)
         for perpage in ls_source:
             _ips = []
-            _ports=[]
-            _anonymity=[]
-            _type=[]
-            _location=[]
+            _ports = []
+            _anonymity = []
+            _type = []
+            _location = []
 
             rex = re.compile(self.pattern, re.IGNORECASE)
-            lsall= rex.findall(perpage)
-            if lsall is not None :
+            lsall = rex.findall(perpage)
+            if lsall is not None:
 
                 for per in lsall:
-                    if(per[0]==self.pattern_header[0]):_ips.append(per[1])
-                    if(per[0]==self.pattern_header[1]):_ports.append(per[1])
-                    if(per[0]==self.pattern_header[2]):_anonymity.append(per[1])
-                    if(per[0]==self.pattern_header[3]):_type.append(per[1])
-                    if(per[0]==self.pattern_header[4]):_location.append(per[1])
+                    if (per[0] == self.pattern_header[0]): _ips.append(per[1])
+                    if (per[0] == self.pattern_header[1]): _ports.append(per[1])
+                    if (per[0] == self.pattern_header[2]): _anonymity.append(per[1])
+                    if (per[0] == self.pattern_header[3]): _type.append(per[1])
+                    if (per[0] == self.pattern_header[4]): _location.append(per[1])
             else:
-                return  None
+                return None
 
-            if _ips is not  None:
+            if _ips is not None:
                 for i in range(len(_ips)):
                     _lineinfo = {
                         'ip': _ips[i],
@@ -162,7 +161,7 @@ class Proxies(object):
         self._getIPs(maxPage)
         pass
 
-    def _threadfunc(self,*args):
+    def _threadfunc(self, *args):
         '''
         Thread callback
         class: => ProxyThreading
@@ -172,10 +171,11 @@ class Proxies(object):
         source = self._getSources(numberpage=args[0])
         return source
 
-    def _encode_(self,string):
-        if type(string)==str:
+    def _encode_(self, string):
+        if type(string) == str:
             return string.encode('utf-8')
-    def saveFile(self,file,overwrite=False,reporter_used=False):
+
+    def saveFile(self, file, overwrite=False, reporter_used=False):
         '''
         Save result to a file
         :param file:    file-obj or filename
@@ -185,45 +185,45 @@ class Proxies(object):
         '''
         if self.result is None:
             return False
-        if file==None:
+        if file == None:
             return False
-        if not hasattr(file,'write'):
+        if not hasattr(file, 'write'):
             if os.path.exists(file):
-                print(colored(('=> [ %s ] existed!' % file),'yellow'))
-                if (overwrite==False):
+                print(colored(('=> [ %s ] existed!' % file), 'yellow'))
+                if (overwrite == False):
                     return False
-            file=open(file,'wb+')
+            file = open(file, 'wb+')
 
         # enable the reporter mode
-        if reporter_used==True:
+        if reporter_used == True:
 
             for i in self.toDict():
-                host,port=i.get('ip'),i.get('port')
-                file.write(self._encode_(host+':'+port+'\n'))
+                host, port = i.get('ip'), i.get('port')
+                file.write(self._encode_(host + ':' + port + '\n'))
             file.close()
             return True
-        file.write(self._encode_('Write time: '+self.getDateTimeNow()+"\n\n"))
+        file.write(self._encode_('Write time: ' + self.getDateTimeNow() + "\n\n"))
 
         if len(dict(self.result[0]).keys()) == 5:
             headers = ['ID', 'Host_IP_Address', 'Host_Port', 'Anonymity', 'Type', 'Location']
         else:
-            headers = ['ID', 'Host_IP_Address', 'Host_Port','Type', 'Anonymity', 'Location','Speed','ConnTime','AliveTime','AuthTime']
+            headers = ['ID', 'Host_IP_Address', 'Host_Port', 'Type', 'Anonymity', 'Location', 'Speed', 'ConnTime',
+                       'AliveTime', 'AuthTime']
 
         for p in headers:
-            file.write(self._encode_(p+'\t'))
+            file.write(self._encode_(p + '\t'))
         file.write(self._encode_('\n'))
 
-        index=0
-        lsrows=self.toDict()
+        index = 0
+        lsrows = self.toDict()
         for i in lsrows:
-            index+=1
+            index += 1
             file.write(self._encode_(str(index) + '\t'))
             for value in i.values():
-                file.write(self._encode_(value+'\t'))
+                file.write(self._encode_(value + '\t'))
             file.write(self._encode_('\n'))
         file.close()
         return True
-
 
     '''
         [
@@ -243,12 +243,13 @@ class Proxies(object):
         ]
         
     '''
+
     def toList(self):
         if self.result is not None:
-            ls_rows=[]
+            ls_rows = []
             for i in self.result:
                 l = []
-                for k,v in i.items():
+                for k, v in i.items():
                     l.append(v)
                 ls_rows.append(l)
             if ls_rows:
@@ -257,11 +258,13 @@ class Proxies(object):
                 return None
         else:
             return None
+
     def toDict(self):
         if self.result is not None:
             return self.result
         else:
             return None
+
 
 class KuaiProxy(Proxies):
 
@@ -307,29 +310,30 @@ class KuaiProxy(Proxies):
             chardet=chardet
         )
 
-        self.typeproxy=INTERNAL_COMMON_PROXY
+        self.typeproxy = INTERNAL_COMMON_PROXY
 
-        self.server='https://www.kuaidaili.com/free'
-        if url==None:
+        self.server = 'https://www.kuaidaili.com/free'
+        if url == None:
             self.url = self.server
         else:
-            self.url=url
+            self.url = url
 
-        if headers !=None:
+        if headers != None:
             self.headers = headers
 
-    def pack_urlquery(self,index):
+    def pack_urlquery(self, index):
         '''
            example:  https://www.kuaidaili.com/free/inha/1
         :param index:
         :return:
         '''
-        str_tmp=''
-        if self.typeproxy==INTERNAL_COMMON_PROXY:
+        str_tmp = ''
+        if self.typeproxy == INTERNAL_COMMON_PROXY:
             str_tmp = 'intr'
         else:
             str_tmp = 'inha'
-        return self.server+'/'+str_tmp+'/'+str(index)
+        return self.server + '/' + str_tmp + '/' + str(index)
+
 
 class XiciProxy(Proxies):
 
@@ -361,68 +365,68 @@ class XiciProxy(Proxies):
                          timeout=timeout,
                          typeproxy=typeproxy,
                          chardet=chardet)
-        self.server='http://www.xicidaili.com'
-        if(url==None):
+        self.server = 'http://www.xicidaili.com'
+        if (url == None):
             self.url = self.server
         else:
-            self.url=url
+            self.url = url
 
-        if headers !=None:
+        if headers != None:
             self.headers = headers
-        self.pattern='<td>(.*?)</td>\s+'\
-            '<td>(.*?)</td>\s+'\
-            '<td>\s+'\
-            '<a href="(.*?)">(.*?)</a>\s+'\
-            '</td>\s+'\
-            '<td class="country">(.*?)</td>\s+'\
-            '<td>(.*?)</td>\s+'\
-            '<td class="country">\s+'\
-            '<div title="(.*?)" class="bar">\s+'\
-            '<div class="bar_inner (.*?)" style="width:(.*?)">\s+'\
-            '</div>\s+'\
-            '</div>\s+'\
-            '</td>\s+'\
-            '<td class="country">\s+'\
-            '<div title="(.*?)" class="bar">\s+'\
-            '<div class="bar_inner (.*?)" style="width:(.*?)">\s+'\
-            '</div>\s+'\
-            '</div>\s+'\
-            '</td>\s+'\
-            '<td>(.*?)</td>\s+'\
-            '<td>(.*?)</td>\s+'\
-            '</tr>\s+'
+        self.pattern = '<td>(.*?)</td>\s+' \
+                       '<td>(.*?)</td>\s+' \
+                       '<td>\s+' \
+                       '<a href="(.*?)">(.*?)</a>\s+' \
+                       '</td>\s+' \
+                       '<td class="country">(.*?)</td>\s+' \
+                       '<td>(.*?)</td>\s+' \
+                       '<td class="country">\s+' \
+                       '<div title="(.*?)" class="bar">\s+' \
+                       '<div class="bar_inner (.*?)" style="width:(.*?)">\s+' \
+                       '</div>\s+' \
+                       '</div>\s+' \
+                       '</td>\s+' \
+                       '<td class="country">\s+' \
+                       '<div title="(.*?)" class="bar">\s+' \
+                       '<div class="bar_inner (.*?)" style="width:(.*?)">\s+' \
+                       '</div>\s+' \
+                       '</div>\s+' \
+                       '</td>\s+' \
+                       '<td>(.*?)</td>\s+' \
+                       '<td>(.*?)</td>\s+' \
+                       '</tr>\s+'
 
     def pack_urlquery(self, index):
         # http://www.xicidaili.com/nt/2
 
-        str_tmp=''
-        if self.typeproxy==INTERNAL_COMMON_PROXY:
-            str_tmp='nt'
-        if self.typeproxy==INTERNAL_HIGHANONYMITY_PROXY:
-            str_tmp='nn'
-        if self.typeproxy==INTERNAL_HTTP_PROXY:
-            str_tmp='wt'
-        if self.typeproxy==INTERNAL_HTTPS_PROXY:
-            str_tmp='wn'
-        return self.server+'/'+str_tmp+'/'+str(index)
+        str_tmp = ''
+        if self.typeproxy == INTERNAL_COMMON_PROXY:
+            str_tmp = 'nt'
+        if self.typeproxy == INTERNAL_HIGHANONYMITY_PROXY:
+            str_tmp = 'nn'
+        if self.typeproxy == INTERNAL_HTTP_PROXY:
+            str_tmp = 'wt'
+        if self.typeproxy == INTERNAL_HTTPS_PROXY:
+            str_tmp = 'wn'
+        return self.server + '/' + str_tmp + '/' + str(index)
 
-    def _getIPs(self,maxPage=2):
+    def _getIPs(self, maxPage=2):
 
-        if maxPage<=0:
+        if maxPage <= 0:
             return None
 
-        ls_sources=[]
+        ls_sources = []
         for index in range(maxPage):
-            th= ProxyThreading(self._threadfunc, index+1)
+            th = ProxyThreading(self._threadfunc, index + 1)
             th.start()
             th.join()
             ls_sources.append(th.get_result())
 
-        if len(ls_sources)==0:
+        if len(ls_sources) == 0:
             return None
         for source in ls_sources:
             rx = re.compile(self.pattern, re.IGNORECASE)
-            if rx==None:
+            if rx == None:
                 break
             _ips = []
             _ports = []
@@ -433,7 +437,7 @@ class XiciProxy(Proxies):
             _connect_time = []
             _alive_time = []
             _auth_time = []
-            
+
             try:
                 ls = rx.findall(source)
             except Exception as e:
@@ -476,7 +480,3 @@ class XiciProxy(Proxies):
                     'auth_time': _auth_time[i],
                 }
                 self.result.append(line)
-
-
-
-
