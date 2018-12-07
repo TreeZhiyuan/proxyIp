@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `xc_proxy_ip`;
 CREATE TABLE `xc_proxy_ip` (
   `IP` VARCHAR(15) NOT NULL DEFAULT '' COMMENT 'IP地址',

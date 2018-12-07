@@ -28,7 +28,7 @@ PooL = PooledDB(
 def func():
     conn = PooL.connection()
     cursor = conn.cursor()
-    cursor.execute('select * from pre_ucenter_tags')
+    cursor.execute('select ip,port,region from xc_proxy_ip')
     result = cursor.fetchall()
     print(result)
     cursor.close()
