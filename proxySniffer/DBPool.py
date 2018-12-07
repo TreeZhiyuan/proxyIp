@@ -21,21 +21,29 @@ PooL = PooledDB(
     port=dbPort,
     user=dbRoot,
     password=dbPasswd,
-    database=dbName
+    database=dbName,
+    charset='utf8'
 )
 
 
-def func():
+def funcFetch():
     conn = PooL.connection()
     cursor = conn.cursor()
     cursor.execute('select ip,port,region from xc_proxy_ip')
     result = cursor.fetchall()
     print(result)
+
+
+def funcInsert():
+    conn = PooL.connection()
+    cursor = conn.cursor()
+    cursor.execute('insert into xc_proxy_ip values(\'12.234.22.32\',\'790\',\'上32322海\')')
+    conn.commit()
     cursor.close()
     conn.close()
 
 
 if __name__ == '__main__':
-    func()
+    funcInsert()
 
     pass
