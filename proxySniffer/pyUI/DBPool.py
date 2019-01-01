@@ -31,9 +31,7 @@ def funcFetch():
     cursor = conn.cursor()
     cursor.execute('select ip,port,region from xc_proxy_ip')
     result = cursor.fetchall()
-    for proxy in result:
-        print(proxy)
-
+    print(result)
 
 
 def funcInsert():

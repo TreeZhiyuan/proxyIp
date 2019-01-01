@@ -13,6 +13,6 @@ CREATE TABLE `zy_account` (
   `name` VARCHAR(15) NOT NULL COMMENT '账户',
   `password` VARCHAR(64) NOT NULL COMMENT '加密后的密码',
   `role` tinyint NOT NULL DEFAULT 1 COMMENT '管理员权限 0为超级管理员',
-  `status` tinyint not null default 1 comment '账号状态',
+  `status` tinyint not null default 1 comment '账号状态 1: 正常 0:异常',
   PRIMARY KEY `PRIMARYID` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 comment='账户信息表';
