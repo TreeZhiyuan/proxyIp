@@ -44,6 +44,6 @@ def funcInsert():
 
 
 if __name__ == '__main__':
-    funcInsert()
+    funcFetch()
 
     pass

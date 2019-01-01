@@ -1,0 +1,49 @@
+ScrollLock::
+{
+    ; --- 获取指令及关键词 ---
+    InputBox, fullCommand, (Command Line Interface), Please give me a command:, , 600, 130 ;获取命令
+    if (fullcommand = "")
+        Return
+    ; -- 解析命令 ---
+    split  := " "
+    StringGetPos , posi, fullCommand, %split%
+    if (posi > 0) {
+        StringMid, eng, fullCommand, 0 , posi ;
+        StringMid, key, fullCommand, posi+2 , StrLen(fullCommand)
+    }
+    else {
+        eng := fullCommand
+        key := ""
+    }
+        ; === 打开IE设置窗口的命令 ===
+        ieSettings := "rundll32.exe shell32.dll, Control_RunDLL inetcpl.cpl, ,4L"
+        ; === python脚本的地址 ===
+    path  := "D:\Solomon Xie\Workspace\setRegProxy.py" ;Python设置代理脚本，可接收命令行参数
+    ; ---开始执行操作---
+    if      (eng = "" and fullcommand != "")
+        Run % ieSettings
+    else if (eng = "Proxy"){
+        if (key = "")
+            Return
+        else if (key = "Off")
+            Run % path " -o Off "
+        else{
+            if (key = "On")
+                key := "" ;“获取”历史IP值太麻烦 先为空吧
+            else
+                key = "--proxy " %key%
+            Run % path  " -o ProxyOnly " key
+        }
+    }
+    else if (eng = "Pac" and key != "") {
+        if (key = "" or key = "On")
+            key = "http://xduotai.com/pRsO3NGR3-.pac"
+        if (key = "Off")
+            Run % path  " -o Off "
+        else {
+            key = "%key%"
+            Run % path " -o PacOnly --pac " key
+        }
+    }
+    Return
+}
