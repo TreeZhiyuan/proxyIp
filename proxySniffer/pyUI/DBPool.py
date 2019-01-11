@@ -26,12 +26,16 @@ PooL = PooledDB(
 )
 
 
-def funcFetch():
+def funcFetch(pageNo=0, pageSize=10):
+    args = (pageNo, pageSize)
     conn = PooL.connection()
     cursor = conn.cursor()
-    cursor.execute('select ip,port,region from xc_proxy_ip')
+    cursor.execute('select ip from xc_proxy_ip limit %s, %s', args)
     result = cursor.fetchall()
+    print(type(list(result)))
+    print("-------")
     print(result)
+    return list(result)
 
 
 def funcInsert():
