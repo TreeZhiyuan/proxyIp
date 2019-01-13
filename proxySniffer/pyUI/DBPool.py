@@ -26,16 +26,17 @@ PooL = PooledDB(
 )
 
 
-def funcFetch(pageNo=0, pageSize=10):
-    args = (pageNo, pageSize)
+def funcFetch(pageNo=0, pageSize=4, searchText=''):
+    args = (pageNo, pageSize, searchText+'%')
     conn = PooL.connection()
     cursor = conn.cursor()
-    cursor.execute('select ip from xc_proxy_ip limit %s, %s', args)
+    cursor.execute('select CONCAT(ip, ":", CONVERT(port,char), "@", region) '
+                   'from xc_proxy_ip  where region like %s limit %s, %s', args)
     result = cursor.fetchall()
-    print(type(list(result)))
-    print("-------")
-    print(result)
-    return list(result)
+    list1 = []
+    for (row,) in list(result):
+        list1.append(row)
+    return list1
 
 
 def funcInsert():

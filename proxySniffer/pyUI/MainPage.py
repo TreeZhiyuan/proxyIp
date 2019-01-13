@@ -1,46 +1,58 @@
-from tkinter import *
-from view import *  # 菜单栏对应的各个子页面
+from view import *
+from tkinter import messagebox
+import DBPool as Pool
 
 
 class MainPage(object):
+    def clearProxy(self):
+        print("cleared")
+
+    def setProxy(self, proxyInfo):
+        if len(proxyInfo.curselection()) == 0:
+            messagebox.showerror(title='错误', message="请先选择一个代理Ip地址")
+            return
+        else:
+            print(proxyInfo.get(proxyInfo.curselection()))
+
+    def fetchDb(self, searchText):
+        print(searchText)
+        pageNo1 = self.pageNo - 1
+        pageNo1 = pageNo1 * self.pageSize
+        ipsInside = Pool.funcFetch(pageNo1, self.pageSize)
+        if len(ipsInside) == 0:
+            self.pageNo = 1
+            pageNo1 = self.pageNo - 1
+            pageNo1 = pageNo1 * self.pageSize
+            ipsInside = Pool.funcFetch(pageNo1, self.pageSize)
+            self.v.set(ipsInside)
+        else:
+            self.v.set(ipsInside)
+            self.pageNo += 1
+
     def __init__(self, master=None):
         self.root = master  # 定义内部变量root
-        self.root.geometry('%dx%d' % (600, 400))  # 设置窗口大小
+        self.pageNo = 1
+        self.pageSize = 10
+        self.v = StringVar()
+        self.nextPageText = StringVar()
+        self.searchtext = StringVar()
+        self.nextPageText.set("下一页")
+        self.root.geometry('%dx%d' % (260, 330))  # 设置窗口大小
+        self.fetchDb(self.searchtext.get())
         self.createPage()
 
     def createPage(self):
-        self.inputPage = InputFrame(self.root)  # 创建不同Frame
-        self.queryPage = QueryFrame(self.root)
-        self.countPage = CountFrame(self.root)
-        self.aboutPage = AboutFrame(self.root)
-        self.inputPage.pack()  # 默认显示数据录入界面
-        menubar = Menu(self.root)
-        menubar.add_command(label='数据录入', command=self.inputData)
-        menubar.add_command(label='查询', command=self.queryData)
-        menubar.add_command(label='统计', command=self.countData)
-        menubar.add_command(label='关于', command=self.aboutDisp)
-        self.root['menu'] = menubar  # 设置菜单栏
+        text = Entry(textvariable=self.searchtext)
+        text.place(x=45, y=11)
+        btn1 = Button(self.root, textvariable=self.nextPageText, text=self.nextPageText,
+                      command=lambda: self.fetchDb(text.get()))
+        btn1.place(x=155, y=5)
 
-    def inputData(self):
-        self.inputPage.pack()
-        self.queryPage.pack_forget()
-        self.countPage.pack_forget()
-        self.aboutPage.pack_forget()
+        lb = Listbox(self.root, listvariable=self.v, width=35)
+        lb.selection_set(first=0)
+        lb.place(x=15, y=40)
 
-    def queryData(self):
-        self.inputPage.pack_forget()
-        self.queryPage.pack()
-        self.countPage.pack_forget()
-        self.aboutPage.pack_forget()
-
-    def countData(self):
-        self.inputPage.pack_forget()
-        self.queryPage.pack_forget()
-        self.countPage.pack()
-        self.aboutPage.pack_forget()
-
-    def aboutDisp(self):
-        self.inputPage.pack_forget()
-        self.queryPage.pack_forget()
-        self.countPage.pack_forget()
-        self.aboutPage.pack()
+        btn2 = Button(self.root, text="设置代理", command=lambda: self.setProxy(lb))
+        btn2.place(x=45, y=230)
+        btn3 = Button(self.root, text="清除代理", command=self.clearProxy)
+        btn3.place(x=150, y=230)
