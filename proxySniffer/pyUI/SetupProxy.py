@@ -63,5 +63,7 @@ def __toHex(obj):
         return num if len(num) > 1 else '0' + num
 
 
-def setProxy(ip, port):
-    print("")
+def setProxy(proxy):
+    pac = ''
+    pac = 'http://xduotai.com/pRsO3NGR3-.pac' if not pac else pac
+    regIESettings("ProxyOnly", proxy, pac, False)

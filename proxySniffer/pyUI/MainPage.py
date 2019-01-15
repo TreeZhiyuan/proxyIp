@@ -1,6 +1,7 @@
 from view import *
 from tkinter import messagebox
 import DBPool as Pool
+import SetupProxy as proxy
 
 
 class MainPage(object):
@@ -12,18 +13,19 @@ class MainPage(object):
             messagebox.showerror(title='错误', message="请先选择一个代理Ip地址")
             return
         else:
-            print(proxyInfo.get(proxyInfo.curselection()))
+            proxyIp = proxyInfo.get(proxyInfo.curselection()).split("@")[0]
+            proxy.setProxy(proxyIp)
 
     def fetchDb(self, searchText):
         print(searchText)
         pageNo1 = self.pageNo - 1
         pageNo1 = pageNo1 * self.pageSize
-        ipsInside = Pool.funcFetch(pageNo1, self.pageSize)
+        ipsInside = Pool.funcFetch(pageNo1, self.pageSize, searchText)
         if len(ipsInside) == 0:
             self.pageNo = 1
             pageNo1 = self.pageNo - 1
             pageNo1 = pageNo1 * self.pageSize
-            ipsInside = Pool.funcFetch(pageNo1, self.pageSize)
+            ipsInside = Pool.funcFetch(pageNo1, self.pageSize, searchText)
             self.v.set(ipsInside)
         else:
             self.v.set(ipsInside)

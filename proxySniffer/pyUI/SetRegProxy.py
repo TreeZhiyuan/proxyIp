@@ -80,7 +80,7 @@ def __toHex(obj):
 if __name__ == '__main__':
     # 获取文件外部参数
     # 用法：在命令行中输入SetRegProxy.py -o "ProxyOnly" -l --proxy"0.0.0.0:80" -l
-    # SetProxy.py -o Off 实现回源
+    # SetRegProxy.py -o Off 实现回源
     opts, args = getopt.getopt(sys.argv[1:], 'o:p:a:l', ['option=', 'proxy=', 'pac=', 'local'])
     # 调试用
     print(opts, args)

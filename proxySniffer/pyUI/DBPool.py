@@ -26,12 +26,21 @@ PooL = PooledDB(
 )
 
 
-def funcFetch(pageNo=0, pageSize=4, searchText=''):
-    args = (pageNo, pageSize, searchText+'%')
+def funcFetch(pageNo=0, pageSize=4, searchText='广'):
+    print(pageNo)
+    print(pageSize)
+    sql = "select CONCAT(ip, ':', CONVERT(port,char), '@', region) from xc_proxy_ip "
+    if searchText == '':
+        tail = "limit %s, %s"
+        args = (pageNo, pageSize)
+    else:
+        tail = "where region like %s limit %s, %s"
+        args = (("%" + searchText + "%"), pageNo, pageSize)
+
+    sql += tail
     conn = PooL.connection()
     cursor = conn.cursor()
-    cursor.execute('select CONCAT(ip, ":", CONVERT(port,char), "@", region) '
-                   'from xc_proxy_ip  where region like %s limit %s, %s', args)
+    cursor.execute(sql, args)
     result = cursor.fetchall()
     list1 = []
     for (row,) in list(result):

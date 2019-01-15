@@ -7,12 +7,12 @@ class LoginPage(object):
         self.root = master  # 定义内部变量root
         self.root.geometry('%dx%d' % (300, 180))  # 设置窗口大小
         self.root.resizable(height=False, width=False)
+        self.page = Frame(self.root)  # 创建Frame
         self.username = StringVar()
         self.password = StringVar()
         self.createPage()
 
     def createPage(self):
-        self.page = Frame(self.root)  # 创建Frame
         self.page.pack()
         Label(self.page).grid(row=0, stick=W)
         Label(self.page, text='账户: ').grid(row=1, stick=W, pady=10)
