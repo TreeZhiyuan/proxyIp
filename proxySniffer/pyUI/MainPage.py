@@ -6,7 +6,7 @@ import SetupProxy as proxy
 
 class MainPage(object):
     def clearProxy(self):
-        print("cleared")
+        proxy.clearproxy()
 
     def setProxy(self, proxyInfo):
         if len(proxyInfo.curselection()) == 0:

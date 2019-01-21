@@ -5,7 +5,7 @@ from DBPool import PooL
 """
 爬取页码
 """
-maximum = 1
+maximum = 4
 
 '''
 IP地址 端口 服务器地址 是否匿名 类型 速度 连接时间 存活时间 验证时间

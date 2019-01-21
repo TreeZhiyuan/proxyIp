@@ -26,10 +26,14 @@ def regIESettings(op, noLocal=False, ip='', pac=''):
             print('\n---Unexpected Option. Please check the value after [-o]---\n')
             return
         skipLocal = '07,00,00,00,%s' % __toHex('<local>') if noLocal else '00'
-        reg_value = '46,00,00,00,00,00,00,00,%(switcher)s,00,00,00,%(ipLen)s,00,00,00,%(ip)s00,00,00,%(skipLocal)s,21,00,00,00%(pac)s' % (
-            {'switcher': switcher, 'ipLen': __toHex(len(ip)), 'ip': __toHex(ip) + ',' if ip else '',
-             'infoLen': __toHex(len('<local>')), 'skipLocal': skipLocal, 'pac': ',' + __toHex(pac) if pac else ''})
-    settings = 'Windows Registry Editor Version 5.00\n[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections]\n"DefaultConnectionSettings"=hex:%s' % reg_value
+        reg_value = '46,00,00,00,00,00,00,00,%(switcher)s,00,00,00,%(ipLen)s,00,00,00,%(ip)s00,00,00,%(skipLocal)s,' \
+                    '21,00,00,00%(pac)s' % (
+                        {'switcher': switcher, 'ipLen': __toHex(len(ip)), 'ip': __toHex(ip) + ',' if ip else '',
+                         'infoLen': __toHex(len('<local>')), 'skipLocal': skipLocal,
+                         'pac': ',' + __toHex(pac) if pac else ''})
+    settings = 'Windows Registry Editor Version 5.00\n' \
+               '[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections]' \
+               '\n"DefaultConnectionSettings"=hex:%s' % reg_value
     # print 'Using proxy address: %s' % ip
 
     print
@@ -67,3 +71,11 @@ def setProxy(proxy):
     pac = ''
     pac = 'http://xduotai.com/pRsO3NGR3-.pac' if not pac else pac
     regIESettings("ProxyOnly", proxy, pac, False)
+
+
+def clearproxy():
+    pac = ''
+    pac = 'http://xduotai.com/pRsO3NGR3-.pac' if not pac else pac
+    regIESettings(op='Off', ip='', pac=pac, noLocal=False)
+    regIESettings(op='PacOnly', ip='', pac=pac, noLocal=False)
+    return True
