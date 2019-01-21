@@ -1,6 +1,6 @@
 from LoginPage import *
 
 root = Tk()
-root.title('小程序')
+root.title('切换ip地址')
 LoginPage(root)
 root.mainloop()
