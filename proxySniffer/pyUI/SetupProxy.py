@@ -70,7 +70,7 @@ def __toHex(obj):
 def setProxy(proxy):
     pac = ''
     pac = 'http://xduotai.com/pRsO3NGR3-.pac' if not pac else pac
-    regIESettings("ProxyOnly", proxy, pac, False)
+    regIESettings(op="ProxyOnly", ip=proxy, pac=pac, noLocal=False)
 
 
 def clearproxy():

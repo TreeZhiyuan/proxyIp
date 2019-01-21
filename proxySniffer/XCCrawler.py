@@ -13,7 +13,7 @@ IP地址 端口 服务器地址 是否匿名 类型 速度 连接时间 存活�
 
 
 def getXiciIps():
-    proxy = XiciProxy(typeproxy=ProxyBase.INTERNAL_HTTP_PROXY)
+    proxy = KuaiProxy(typeproxy=ProxyBase.INTERNAL_HTTP_PROXY)
     proxy.Go(maxPage=maximum)
     xcIpList = proxy.toList()
     print(xcIpList)
@@ -22,8 +22,8 @@ def getXiciIps():
 
 if __name__ == '__main__':
     getXiciIps()
-    # xcIps = getXiciIps()
-    xcIps = [];
+    xcIps = getXiciIps()
+    # xcIps = [];
     conn = PooL.connection()
     cursor = conn.cursor()
     for xcIp in xcIps:
