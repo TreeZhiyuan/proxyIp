@@ -37,7 +37,7 @@ class MainPage(object):
         self.nextPageText = StringVar()
         self.searchtext = StringVar()
         self.nextPageText.set("下一页")
-        self.root.geometry('%dx%d' % (300, 330))  # 设置窗口大小
+        self.root.geometry('%dx%d' % (300, 285))  # 设置窗口大小
         self.fetchDb(self.searchtext.get())
         self.createPage()
 
