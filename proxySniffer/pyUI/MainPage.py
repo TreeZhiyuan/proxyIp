@@ -18,18 +18,16 @@ class MainPage(object):
 
     def fetchDb(self, searchText):
         print(searchText)
-        pageNo1 = self.pageNo - 1
-        pageNo1 = pageNo1 * self.pageSize
+        pageNo1 = (self.pageNo - 1) * self.pageSize
         ipsInside = Pool.funcFetch(pageNo1, self.pageSize, searchText)
         if len(ipsInside) == 0:
             self.pageNo = 1
-            pageNo1 = self.pageNo - 1
-            pageNo1 = pageNo1 * self.pageSize
+            pageNo1 = (self.pageNo - 1) * self.pageSize
             ipsInside = Pool.funcFetch(pageNo1, self.pageSize, searchText)
             self.v.set(ipsInside)
         else:
             self.v.set(ipsInside)
-            self.pageNo += 1
+        self.pageNo += 1
 
     def __init__(self, master=None):
         self.root = master  # 定义内部变量root
@@ -39,7 +37,7 @@ class MainPage(object):
         self.nextPageText = StringVar()
         self.searchtext = StringVar()
         self.nextPageText.set("下一页")
-        self.root.geometry('%dx%d' % (260, 330))  # 设置窗口大小
+        self.root.geometry('%dx%d' % (300, 330))  # 设置窗口大小
         self.fetchDb(self.searchtext.get())
         self.createPage()
 
@@ -50,7 +48,7 @@ class MainPage(object):
                       command=lambda: self.fetchDb(text.get()))
         btn1.place(x=155, y=5)
 
-        lb = Listbox(self.root, listvariable=self.v, width=35)
+        lb = Listbox(self.root, listvariable=self.v, width=40)
         lb.selection_set(first=0)
         lb.place(x=15, y=40)
 

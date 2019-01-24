@@ -97,18 +97,11 @@ if __name__ == '__main__':
             elif o == '-l' or o == '--local':
                 noLocal = False
         pac = 'http://xduotai.com/pRsO3NGR3-.pac' if not pac else pac
-        print("op: "+op)
-        print("ip: "+ip)
-        print("pac: "+pac)
-        print("noLocal: "+str(noLocal))
         if op == 'ProxyOff':
-            print("1111111111")
             regIESettings(op='Off', ip=ip, pac=pac, noLocal=noLocal)
             regIESettings(op='PacOnly', ip=ip, pac=pac, noLocal=noLocal)
         elif op == 'PacOff':
-            print("2222222222")
             regIESettings(op='Off', ip=ip, pac=pac, noLocal=noLocal)
             regIESettings(op='ProxyOnly', ip=ip, pac=pac, noLocal=noLocal)
         else:
-            print("333333")
             regIESettings(op=op, ip=ip, pac=pac, noLocal=noLocal)
