@@ -1,6 +1,6 @@
 from view import *
 from tkinter import messagebox
-import DBPool as Pool
+import dbOperations as dbClient
 import SetupProxy as proxy
 
 
@@ -16,14 +16,14 @@ class MainPage(object):
             proxyIp = proxyInfo.get(proxyInfo.curselection()).split("@")[0]
             proxy.setProxy(proxyIp)
 
-    def fetchDb(self, searchText):
+    def fetchProxyIps(self, searchText):
         print(searchText)
         pageNo1 = (self.pageNo - 1) * self.pageSize
-        ipsInside = Pool.funcFetch(pageNo1, self.pageSize, searchText)
+        ipsInside = dbClient.fetchByPage(pageNo1, self.pageSize, searchText)
         if len(ipsInside) == 0:
             self.pageNo = 1
             pageNo1 = (self.pageNo - 1) * self.pageSize
-            ipsInside = Pool.funcFetch(pageNo1, self.pageSize, searchText)
+            ipsInside = dbClient.fetchByPage(pageNo1, self.pageSize, searchText)
             self.v.set(ipsInside)
         else:
             self.v.set(ipsInside)
@@ -38,14 +38,14 @@ class MainPage(object):
         self.searchtext = StringVar()
         self.nextPageText.set("下一页")
         self.root.geometry('%dx%d' % (300, 285))  # 设置窗口大小
-        self.fetchDb(self.searchtext.get())
+        self.fetchProxyIps(self.searchtext.get())
         self.createPage()
 
     def createPage(self):
         text = Entry(textvariable=self.searchtext)
         text.place(x=45, y=11)
         btn1 = Button(self.root, textvariable=self.nextPageText, text=self.nextPageText,
-                      command=lambda: self.fetchDb(text.get()))
+                      command=lambda: self.fetchProxyIps(text.get()))
         btn1.place(x=155, y=5)
 
         lb = Listbox(self.root, listvariable=self.v, width=40)

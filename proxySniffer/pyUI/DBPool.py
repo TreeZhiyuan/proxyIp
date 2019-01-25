@@ -26,7 +26,7 @@ PooL = PooledDB(
 )
 
 
-def funcFetch(pageNo=0, pageSize=4, searchText='广'):
+def funcFetch(pageNo=0, pageSize=4, searchText=''):
     sql = "select CONCAT(ip, ':', CONVERT(port,char), '@', region) from xc_proxy_ip "
     if searchText == '':
         tail = "limit %s, %s"

@@ -1,5 +1,5 @@
 from MainPage import *
-from CheckSign import check
+from dbOperations import check
 
 
 class LoginPage(object):
