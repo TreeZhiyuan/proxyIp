@@ -1,9 +1,16 @@
 import random
 import requests
+import pyUI.dbOperations as dbOperator
 
 IPAgents = [
     "61.176.223.7:58822",
 ]
+
+
+def fetchIps():
+    ipList = dbOperator.fetchByPage(pageNo=0, pageSize=100)
+    for ip in ipList:
+        print(ip)
 
 
 def isValidTelnet():
@@ -46,5 +53,4 @@ def isProxyIpValid():
     return isValid
 
 
-isValidTelnet()
-
+fetchIps()
