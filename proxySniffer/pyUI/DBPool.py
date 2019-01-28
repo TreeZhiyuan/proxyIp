@@ -1,10 +1,10 @@
 import pymysql
 from DBUtils.PooledDB import PooledDB
 
-dbUrl = "hdm515540417.my3w.com"
-dbPasswd = "Xl19870721/"
-dbRoot = "hdm515540417"
-dbName = "hdm515540417_db"
+dbUrl = ""
+dbPasswd = ""
+dbRoot = ""
+dbName = ""
 dbPort = 3306
 
 PooL = PooledDB(
