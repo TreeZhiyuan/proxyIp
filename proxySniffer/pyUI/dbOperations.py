@@ -19,7 +19,7 @@ def check(user_name, user_pwd):
     args = (user_name, user_pwd)
     conn = PooL.connection()
     cursor = conn.cursor()
-    cursor.execute('select count(*) from zy_account where name=%s and password=%s', args)
+    cursor.execute('select count(*) from zy_account where name=%s and password=%s and status=1', args)
     result = cursor.fetchone()
     if result[0] == 1:
         flag = True
