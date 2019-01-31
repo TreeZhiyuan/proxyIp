@@ -17,7 +17,6 @@ class MainPage(object):
             proxy.setProxy(proxyIp)
 
     def fetchProxyIps(self, searchText):
-        print(searchText)
         pageNo1 = (self.pageNo - 1) * self.pageSize
         ipsInside = dbClient.fetchByPage(pageNo1, self.pageSize, searchText)
         if len(ipsInside) == 0:

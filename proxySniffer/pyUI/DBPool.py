@@ -24,38 +24,3 @@ PooL = PooledDB(
     database=dbName,
     charset='utf8'
 )
-
-
-def funcFetch(pageNo=0, pageSize=4, searchText=''):
-    sql = "select CONCAT(ip, ':', CONVERT(port,char), '@', region) from xc_proxy_ip "
-    if searchText == '':
-        tail = "limit %s, %s"
-        args = (pageNo, pageSize)
-    else:
-        tail = "where region like %s limit %s, %s"
-        args = (("%" + searchText + "%"), pageNo, pageSize)
-
-    sql += tail
-    conn = PooL.connection()
-    cursor = conn.cursor()
-    cursor.execute(sql, args)
-    result = cursor.fetchall()
-    list1 = []
-    for (row,) in list(result):
-        list1.append(row)
-    return list1
-
-
-def funcInsert():
-    conn = PooL.connection()
-    cursor = conn.cursor()
-    cursor.execute('insert into xc_proxy_ip values(\'12.234.22.32\',\'790\',\'上32322海\')')
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-
-if __name__ == '__main__':
-    funcFetch()
-
-    pass

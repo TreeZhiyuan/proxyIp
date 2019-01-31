@@ -1,13 +1,24 @@
 from DBPool import PooL
 
 
-# 删除已经失效的代理ip地址
+# 批量删除已经失效的代理ip地址
 def delInvalidIps(iplists):
     conn = PooL.connection()
     cursor = conn.cursor()
     ips = ','.join(iplists)
     sql = "delete from xc_proxy_ip where ip in (%s)"
     cursor.execute(sql, [ips])
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+# 删除已经失效的代理ip地址
+def delInvalidIps(ip):
+    conn = PooL.connection()
+    cursor = conn.cursor()
+    sql = "delete from xc_proxy_ip where ip=%s"
+    cursor.execute(sql, [ip])
     conn.commit()
     cursor.close()
     conn.close()

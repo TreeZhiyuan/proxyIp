@@ -5,7 +5,7 @@ from DBPool import PooL
 """
 爬取页码
 """
-maximum = 4
+maximum = 3
 
 '''
 IP地址 端口 服务器地址 是否匿名 类型 速度 连接时间 存活时间 验证时间
@@ -13,6 +13,14 @@ IP地址 端口 服务器地址 是否匿名 类型 速度 连接时间 存活�
 
 
 def getXiciIps():
+    proxy = XiciProxy(typeproxy=ProxyBase.INTERNAL_HIGHANONYMITY_PROXY)
+    proxy.Go(maxPage=maximum)
+    xcIpList = proxy.toList()
+    print(xcIpList)
+    return xcIpList
+
+
+def getKuaiIps():
     proxy = KuaiProxy(typeproxy=ProxyBase.INTERNAL_HTTP_PROXY)
     proxy.Go(maxPage=maximum)
     xcIpList = proxy.toList()
@@ -21,9 +29,7 @@ def getXiciIps():
 
 
 if __name__ == '__main__':
-    getXiciIps()
     xcIps = getXiciIps()
-    # xcIps = [];
     conn = PooL.connection()
     cursor = conn.cursor()
     for xcIp in xcIps:
