@@ -5,18 +5,28 @@ import SetupProxy as proxy
 
 
 class MainPage(object):
-    def clearProxy(self):
+    @staticmethod
+    def clearProxy():
         proxy.clearproxy()
 
-    def setProxy(self, proxyInfo):
+    @staticmethod
+    def setProxy(proxyInfo):
         if len(proxyInfo.curselection()) == 0:
             messagebox.showerror(title='错误', message="请先选择一个代理Ip地址")
             return
         else:
-            proxyIp = proxyInfo.get(proxyInfo.curselection()).split("@")[0]
+            proxyIp = proxyInfo.get(proxyInfo.curselection()).split(" ")[0]
             proxy.setProxy(proxyIp)
 
-    def fetchProxyIps(self, searchText):
+    def searchProxyIps(self, searchText):
+        ipsInside = dbClient.fetchByPage(1, self.pageSize, searchText)
+        self.v.set(ipsInside)
+        self.pageNo += 1
+
+    def previousProxyIps(self, searchText):
+        print(self.searchBtnText, searchText)
+
+    def nextProxyIps(self, searchText):
         pageNo1 = (self.pageNo - 1) * self.pageSize
         ipsInside = dbClient.fetchByPage(pageNo1, self.pageSize, searchText)
         if len(ipsInside) == 0:
@@ -33,25 +43,46 @@ class MainPage(object):
         self.pageNo = 1
         self.pageSize = 10
         self.v = StringVar()
+        self.previousPageText = StringVar()
         self.nextPageText = StringVar()
+        self.searchBtnText = StringVar()
         self.searchtext = StringVar()
+        self.previousPageText.set("上一页")
         self.nextPageText.set("下一页")
-        self.root.geometry('%dx%d' % (300, 285))  # 设置窗口大小
-        self.fetchProxyIps(self.searchtext.get())
+        self.searchBtnText.set("检索")
+        self.root.geometry('%dx%d' % (350, 300))  # 设置窗口大小
+        self.nextProxyIps(self.searchtext.get())
         self.createPage()
 
     def createPage(self):
-        text = Entry(textvariable=self.searchtext)
-        text.place(x=45, y=11)
-        btn1 = Button(self.root, textvariable=self.nextPageText, text=self.nextPageText,
-                      command=lambda: self.fetchProxyIps(text.get()))
-        btn1.place(x=155, y=5)
+        # 检索框
+        searchText = Entry(textvariable=self.searchtext)
+        searchText.place(x=45, y=11)
 
-        lb = Listbox(self.root, listvariable=self.v, width=40)
-        lb.selection_set(first=0)
-        lb.place(x=15, y=40)
+        # 检索按钮
+        searchBtn = Button(self.root, textvariable=self.searchBtnText, text=self.searchBtnText,
+                           command=lambda: self.searchProxyIps(searchText.get()))
+        searchBtn.place(x=200, y=7)
 
-        btn2 = Button(self.root, text="设置代理", command=lambda: self.setProxy(lb))
-        btn2.place(x=45, y=230)
-        btn3 = Button(self.root, text="清除代理", command=self.clearProxy)
-        btn3.place(x=150, y=230)
+        # 上一页按钮
+        previousPageBtn = Button(self.root, textvariable=self.previousPageText, text=self.previousPageText,
+                                 command=lambda: self.previousProxyIps(searchText.get()))
+        previousPageBtn.place(x=35, y=40)
+
+        # 下一页按钮
+        nextPageBtn = Button(self.root, textvariable=self.nextPageText, text=self.nextPageText,
+                             command=lambda: self.nextProxyIps(searchText.get()))
+        nextPageBtn.place(x=200, y=40)
+
+        # 代理ip地址
+        proxyIpList = Listbox(self.root, listvariable=self.v, width=40)
+        proxyIpList.selection_set(first=0)
+        proxyIpList.place(x=15, y=73)
+
+        # 设置代理按钮
+        setProxyBtn = Button(self.root, text="设置代理", command=lambda: self.setProxy(proxyIpList))
+        setProxyBtn.place(x=45, y=260)
+
+        # 清楚代理按钮
+        clearProxyBtn = Button(self.root, text="清除代理", command=self.clearProxy)
+        clearProxyBtn.place(x=150, y=260)

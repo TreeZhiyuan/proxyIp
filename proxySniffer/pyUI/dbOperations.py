@@ -41,7 +41,7 @@ def check(user_name, user_pwd):
 
 # 分页获取代理ip
 def fetchByPage(pageNo=0, pageSize=10, searchText=''):
-    sql = "select CONCAT(ip, ':', CONVERT(port,char), '@', region) from xc_proxy_ip "
+    sql = "select CONCAT(ip, ':', CONVERT(port,char), ' ', region) from xc_proxy_ip "
     if searchText == '':
         tail = "limit %s, %s"
         args = (pageNo, pageSize)
@@ -56,7 +56,7 @@ def fetchByPage(pageNo=0, pageSize=10, searchText=''):
     result = cursor.fetchall()
     cursor.close()
     conn.close()
-    list1 = []
+    orgIps = []
     for (row,) in list(result):
-        list1.append(row)
-    return list1
+        orgIps.append(row)
+    return orgIps
